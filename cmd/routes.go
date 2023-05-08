@@ -5,7 +5,7 @@ import (
 	"github.com/jugui93/rest-api/handlers"
 )
 
-func setupRoutes(app *fiber.App) {
+func SetupRoutes(app *fiber.App) {
 	app.Get("/fact", handlers.ListFacts)
 
 	app.Post("/fact", handlers.CreateFact)

@@ -1,20 +1,30 @@
-package main_test
+package main
 
 import (
-	"testing"
-	"net/http"
-    "net/http/httptest"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jugui93/rest-api/database"
 	"github.com/jugui93/rest-api/models"
 )
 
+
 func TestListFacts(t *testing.T) {
 	// setup
 	app := fiber.New()
-	database.ConnectDb()
-	setupRoutes(app)
+	dsn := fmt.Sprintf(
+		"host=localhost user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+	)
+	database.ConnectDb(dsn)
+	SetupRoutes(app)
 
 	// create test data
 	fact1 := models.Fact{Question: "What is the capital of France?", Answer: "Paris"}
@@ -52,6 +62,4 @@ func TestListFacts(t *testing.T) {
 	}
 }
 
-func setupRoutes(app *fiber.App) {
-	panic("unimplemented")
-}
+

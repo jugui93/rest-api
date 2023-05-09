@@ -18,17 +18,20 @@ func TestListFacts(t *testing.T) {
 	// setup
 	app := fiber.New()
 	dsn := fmt.Sprintf(
-		"host=localhost user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+		"host=dbtest user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		os.Getenv("DB_NAME_TEST"),
 	)
 	database.ConnectDb(dsn)
 	SetupRoutes(app)
+	
 
 	// create test data
-	fact1 := models.Fact{Question: "What is the capital of France?", Answer: "Paris"}
-	fact2 := models.Fact{Question: "What is the largest ocean?", Answer: "Pacific"}
+	fact1 := models.Fact{Question: "What is the capital of France?",
+		Answer: "a", A:"Paris", B:"Roma", C:"Barcelona", D:"Munich",Level:1}
+	fact2 := models.Fact{Question: "What is the largest ocean?",
+		Answer: "d", A:"Artic", B:"Atlantic", C:"Southern", D:"Pacific",Level:1}
 	database.DB.Db.Create(&fact1)
 	database.DB.Db.Create(&fact2)
 

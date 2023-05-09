@@ -21,6 +21,14 @@ services:
       - 5432:5432
     volumes:
      - postgres-db:/var/lib/postgresql/data
+  dbtest:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_TEST}
+    ports:
+      - 5433:5432
   # test:
   #   build: .
   #   volumes:

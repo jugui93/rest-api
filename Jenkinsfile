@@ -14,13 +14,20 @@ pipeline {
                 // Get some code from a GitHub repository
                 git branch: 'main', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git'
 
-                // Run Maven on a Unix agent.
-                step([$class: 'DockerComposeBuilder', dockerComposeFile: 'docker-compose.yml', option: [$class: 'StartAllServices'], useCustomDockerComposeFile: true])
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                //Build services
+                sh 'docker compose build'
             }
+        }
+        stage('Test') {
+            steps {
+                //Create and start containers
+                sh 'docker compose up'
 
+                //Run test
+                sh 'docker compose exec web go test ./...'
+                //Stop containers
+                sh 'docker compose stop'
+            }
         }
     }
 }

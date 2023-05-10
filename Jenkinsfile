@@ -22,12 +22,12 @@ pipeline {
             steps {
                 // Start all services defined in docker-compose.yml
                 script {
-                    def composeCommand = "docker-compose up -d"
+                    def composeCommand = "docker compose up -d"
                     sh composeCommand
 
                     // Wait for the web service to be ready
                     retry(5) {
-                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:<web_service_port>')
+                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact')
                         if (response.trim() == '200') {
                             echo 'Web service is ready!'
                         } else {

@@ -41,7 +41,7 @@ pipeline {
             steps {
                 // Run tests inside the web service container
                 script {
-                    def composeCommand = "docker-compose exec -T web go test ./..."
+                    def composeCommand = "docker compose exec -T web go test ./..."
                     sh composeCommand
                 }
             }

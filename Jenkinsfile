@@ -18,15 +18,32 @@ pipeline {
                 sh 'docker compose build'
             }
         }
-        stage('Test') {
+        stage('Start Services') {
             steps {
-                //Create and start containers
-                sh 'docker compose up'
+                // Start all services defined in docker-compose.yml
+                script {
+                    def composeCommand = "docker-compose up -d"
+                    sh composeCommand
 
-                //Run test
-                sh 'docker compose exec web go test ./...'
-                //Stop containers
-                sh 'docker compose stop'
+                    // Wait for the web service to be ready
+                    retry(5) {
+                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:<web_service_port>')
+                        if (response.trim() == '200') {
+                            echo 'Web service is ready!'
+                        } else {
+                            error 'Web service is not ready yet'
+                        }
+                    }
+                }
+            }
+        }
+        stage('Run Test') {
+            steps {
+                // Run tests inside the web service container
+                script {
+                    def composeCommand = "docker-compose exec -T web go test ./..."
+                    sh composeCommand
+                }
             }
         }
     }

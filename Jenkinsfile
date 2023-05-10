@@ -41,8 +41,12 @@ pipeline {
             steps {
                 // Run tests inside the web service container
                 script {
-                    def composeCommand = "docker compose exec -T web go test ./..."
-                    sh composeCommand
+                    def testResult = sh(script: 'docker-compose exec -T web go test', returnStatus: true)
+                    if (testResult != 0) {
+                        currentBuild.result = 'FAILURE'
+                        error('Tests failed')
+                    }
+                    sh 'docker compose down'
                 }
             }
         }

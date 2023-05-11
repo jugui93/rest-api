@@ -44,9 +44,10 @@ pipeline {
                     def testResult = sh(script: 'docker compose exec -T web go test ./cmd', returnStatus: true)
                     if (testResult != 0) {
                         currentBuild.result = 'FAILURE'
+                        sh 'docker compose down -v'
                         error('Tests failed')
                     }
-                    sh 'docker compose down'
+                    sh 'docker compose down -v'
                 }
             }
         }

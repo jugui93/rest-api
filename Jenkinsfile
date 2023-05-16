@@ -9,20 +9,20 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Build Test') {
             steps {
                 // Get some code from a GitHub repository
                 git branch: 'main', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git'
 
                 //Build services
-                sh 'docker compose build'
+                sh 'docker compose -f docker-compose.test.yml build'
             }
         }
         stage('Start Services') {
             steps {
                 // Start all services defined in docker-compose.yml
                 script {
-                    def composeCommand = "docker compose up -d"
+                    def composeCommand = "docker compose -f docker-compose.test.yml up -d"
                     sh composeCommand
 
                     // Wait for the web service to be ready
@@ -50,6 +50,9 @@ pipeline {
                     sh 'docker compose down -v'
                 }
             }
+        }
+        stage('Build') {
+            sh 'docker compose build'
         }
     }
 }

@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.test
     depends_on:
       db:
         condition: service_healthy
@@ -30,6 +32,14 @@ services:
       retries: 3
     volumes:
      - postgres-db:/var/lib/postgresql/data
+  dbtest:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_TEST}
+    ports:
+      - 5433:5432
 
 volumes:
   postgres-db:

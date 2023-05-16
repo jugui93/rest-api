@@ -11,9 +11,9 @@ services:
       - .env
     ports:
       - 3000:3000
-    volumes:
-      - .:/usr/src/app
-    command: /bin/main
+    # volumes:
+    #   - .:/usr/src/app
+    command: /usr/src/app/main
     # command: air cmd/main.go -b 0.0.0.0
   db:
     image: postgres:alpine

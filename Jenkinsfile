@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent worker1
 
     environment {
         DB_USER = "juan1234"

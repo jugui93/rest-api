@@ -1,5 +1,7 @@
 pipeline {
-    agent worker1
+    agent { 
+        label 'docker'
+    }
 
     environment {
         DB_USER = "juan1234"

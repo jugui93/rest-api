@@ -5,13 +5,9 @@ pipeline {
 
     environment {
         DB_USER = "${DB_USER}"
-        DB_PASSWORD = "${DB_PASSWROD}"
+        DB_PASSWORD = "${DB_PASSWORD}"
         DB_NAME = "${DB_NAME}"
         DB_NAME_TEST = "${DB_NAME_TEST}"
-        // AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        // AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        // AWS_DEFAULT_REGION = 'us-east-1'
-        // ECR_REPOSITORY_URL = '181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab'
     }
 
     stages {

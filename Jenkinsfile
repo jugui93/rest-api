@@ -4,10 +4,14 @@ pipeline {
     }
 
     environment {
-        DB_USER = "juan1234"
-        DB_PASSWORD = "juan1234"
-        DB_NAME = "facts"
-        DB_NAME_TEST = "test"
+        DB_USER = ${DB_USER}
+        DB_PASSWORD = ${DB_PASSWROD}
+        DB_NAME = ${DB_NAME}
+        DB_NAME_TEST = ${DB_NAME_TEST}
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_DEFAULT_REGION = 'us-east-1'
+        ECR_REPOSITORY_URL = '181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab'
     }
 
     stages {
@@ -55,8 +59,25 @@ pipeline {
         }
         stage('Build') {
             steps{
-                sh 'docker compose build'
+                // Build your Docker Compose here
+                withAmazonECR(credentialsId: '70ba9347-f845-4a24-84ae-e9abb7b28bff', region: 'us-east-1') {
+                    def repository = "project-lab"
+                    def tag = "latest"
+                    ecr.createRepository(repository)
+                    sh "docker compose build"
+                    sh "docker tag project-lab-app-web:latest ${ecr.registry(repository)}:${tag}"
+                    ecr.push(repository: repository, tag: tag)
+                }
             }
         }
+        // stage('Push') {
+        //     steps {
+        //         withCredentials([string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'), 
+        //                         string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+        //         sh "aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REPOSITORY_URL"
+        //         sh "docker push $ECR_REPOSITORY_URL:latest"
+        //         }
+        //     }
+        // }
     }
 }

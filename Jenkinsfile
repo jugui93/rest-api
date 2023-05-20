@@ -69,26 +69,24 @@ pipeline {
             }
         }
         stage('Deploy') {
-            agent {
-                label 'deploy' // Replace 'your-node-label' with the label assigned to the desired Jenkins node
-            }
             steps {
-                // Pull the latest image from ECR
-                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com'
-                sh 'docker pull 181021887246.dkr.ecr.us-east-1.amazonaws.com/repository:latest'
+                sshagent(['61b93c39-4d3b-4f7d-a4a4-cbe4d7597894']){
+                    // Pull the latest image from ECR
+                    sh 'ssh ubuntu@54.81.202.196 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com"'
+                    sh 'ssh ubuntu@54.81.202.196 "docker pull 181021887246.dkr.ecr.us-east-1.amazonaws.com/repository:latest"'
 
-                // Deploy the app using Docker Compose
-                script {
-                    def composeCommand = "docker compose up -d"
-                    sh composeCommand
+                    // Deploy the app using Docker Compose
+                    script {
+                        sh  'ssh ubuntu@54.81.202.196 "docker compose up -d"'
 
-                    // Wait for the web service to be ready
-                    retry(5) {
-                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact')
-                        if (response.trim() == '200') {
-                            echo 'Web service is ready!'
-                        } else {
-                            error 'Web service is not ready yet'
+                        // Wait for the web service to be ready
+                        retry(5) {
+                            def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact')
+                            if (response.trim() == '200') {
+                                echo 'Web service is ready!'
+                            } else {
+                                error 'Web service is not ready yet'
+                            }
                         }
                     }
                 }

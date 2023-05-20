@@ -82,10 +82,12 @@ pipeline {
 
                     // Wait for the web service to be ready
                     retry(5) {
-                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact')
+                        def response = sh(returnStdout: true, script: 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact"')
                         if (response.trim() == '200') {
                             echo 'Web service is ready!'
                         } else {
+                            echo 'Web service is not ready yet, retrying after a delay...'
+                            sleep time: 8, unit: 'SECONDS'  // Add a delay of 30 seconds
                             error 'Web service is not ready yet'
                         }
                     }

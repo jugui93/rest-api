@@ -77,7 +77,7 @@ pipeline {
 
                 // Deploy the app using Docker Compose
                 script {
-                    sh  'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "docker compose up -d"'
+                    sh  'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "cd /home/ubuntu/project-lab && docker compose up -d"'
 
                     // Wait for the web service to be ready
                     retry(5) {

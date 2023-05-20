@@ -68,5 +68,33 @@ pipeline {
                 sh 'docker system prune --all --force'
             }
         }
+        stage('Deploy') {
+            agent {
+                label 'deploy' // Replace 'your-node-label' with the label assigned to the desired Jenkins node
+            }
+            steps {
+                // Pull the latest image from ECR
+                withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com'
+                    sh 'docker pull $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/repository:latest'
+                }
+
+                // Deploy the app using Docker Compose
+                script {
+                    def composeCommand = "docker compose up -d"
+                    sh composeCommand
+
+                    // Wait for the web service to be ready
+                    retry(5) {
+                        def response = sh(returnStdout: true, script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact')
+                        if (response.trim() == '200') {
+                            echo 'Web service is ready!'
+                        } else {
+                            error 'Web service is not ready yet'
+                        }
+                    }
+                }
+            }
+        }
     }
 }

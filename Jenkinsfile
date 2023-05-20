@@ -58,8 +58,14 @@ pipeline {
                 // Build your Docker Compose here
                 sh '''aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com
                 docker compose build
-                docker tag project-lab:latest 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest
+                docker tag project-lab-app-web:latest 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest
                 docker compose push 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest'''
+            }
+        }
+        stage('Clean Docker') {
+            steps {
+                // Clean Docker
+                sh 'docker system prune --all --force'
             }
         }
     }

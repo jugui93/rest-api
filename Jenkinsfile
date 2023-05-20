@@ -73,7 +73,7 @@ pipeline {
             steps {
                 // Pull the latest image from ECR
                 sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com"'
-                sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "docker pull 181021887246.dkr.ecr.us-east-1.amazonaws.com/repository:latest"'
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "docker pull 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest"'
 
                 // Deploy the app using Docker Compose
                 script {

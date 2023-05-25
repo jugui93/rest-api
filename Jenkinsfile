@@ -68,5 +68,31 @@ pipeline {
                 sh 'docker system prune --all --force'
             }
         }
+        stage('Deploy') {
+            agent any
+            steps {
+                // Pull the latest image from ECR
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com"'
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "docker pull 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest"'
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "docker tag 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab project-lab-app-web"'
+
+                // Deploy the app using Docker Compose
+                script {
+                    sh  'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "cd /home/ubuntu/project-lab && docker compose up -d"'
+
+                    // Wait for the web service to be ready
+                    retry(5) {
+                        def response = sh(returnStdout: true, script: 'ssh -o StrictHostKeyChecking=no ubuntu@54.81.202.196 "curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/fact"')
+                        if (response.trim() == '200') {
+                            echo 'Web service is ready!'
+                        } else {
+                            echo 'Web service is not ready yet, retrying after a delay...'
+                            sleep time: 8, unit: 'SECONDS'  // Add a delay of 30 seconds
+                            error 'Web service is not ready yet'
+                        }
+                    }
+                }
+            }
+        }
     }
 }

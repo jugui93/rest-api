@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   web:
+    build: .
     image: project-lab-app-web
     depends_on:
       db:

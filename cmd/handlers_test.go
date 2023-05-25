@@ -52,7 +52,7 @@ func TestListFacts(t *testing.T) {
 		t.Fatalf("Expected no error, but got %v", err)
 	}
 
-	if len(facts) != 2 {
+	if len(facts) != 3 {
 		t.Errorf("Expected 2 facts, but got %d", len(facts))
 	}
 

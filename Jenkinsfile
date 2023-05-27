@@ -4,10 +4,10 @@ pipeline {
     }
 
     environment {
-        DB_USER = $DB_USER
-        DB_PASSWORD = $DB_PASSWORD
-        DB_NAME = $DB_NAME
-        DB_NAME_TEST = $DB_NAME_TEST
+        DB_USER = "$DB_USER"
+        DB_PASSWORD = "$DB_PASSWORD"
+        DB_NAME = "$DB_NAME"
+        DB_NAME_TEST = "$DB_NAME_TEST"
     }
 
     stages {

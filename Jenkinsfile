@@ -2,6 +2,12 @@ pipeline {
   agent {
     label 'ubuntu'
   }
+  environment {
+    DB_USER = "${DB_USER}"
+    DB_PASSWORD = "${DB_PASSWORD}"
+    DB_NAME = "${DB_NAME}"
+    DB_NAME_TEST = "${DB_NAME_TEST}"
+  }
   stages {
     stage('Build Test') {
       steps {
@@ -85,11 +91,5 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    DB_USER = "$DB_USER"
-    DB_PASSWORD = "$DB_PASSWORD"
-    DB_NAME = "$DB_NAME"
-    DB_NAME_TEST = "$DB_NAME_TEST"
   }
 }

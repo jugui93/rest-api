@@ -14,7 +14,7 @@ pipeline {
         stage('Build Test') {
             steps {
                 // Get some code from a GitHub repository
-                git branch: 'develop', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git'
+                git branch: 'feature/env-variables', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git'
 
                 //Build services
                 sh 'docker compose -f docker-compose.test.yml build'

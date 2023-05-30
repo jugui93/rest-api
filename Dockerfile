@@ -4,12 +4,13 @@ WORKDIR /usr/src/app
 
 # RUN go install github.com/cosmtrek/air@latest
 
-COPY cmd .
-COPY database .
-COPY handlers .
-COPY models .
-COPY go.mod .
-COPY go.sum .
+COPY cmd/. ./cmd/
+COPY database/. ./database/
+COPY handlers/. ./handlers/
+COPY models/. ./models/
+COPY go.mod ./
+COPY go.sum ./
+
 RUN go mod tidy
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/main ./cmd

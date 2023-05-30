@@ -9,8 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var notFound string = "Fact not found"
-
 func ListFacts(c *fiber.Ctx) error {
 	facts := []models.Fact{}
 	
@@ -39,7 +37,7 @@ func ShowFact(c *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"message": notFound,
+				"message": "Fact not found",
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -57,7 +55,7 @@ func UpdateFact(c *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"message": notFound,
+				"message": "Fact not found",
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -88,7 +86,7 @@ func DeleteFact(c *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"message": notFound,
+				"message": "Fact not found",
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

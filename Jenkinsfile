@@ -9,9 +9,19 @@ pipeline {
     DB_NAME_TEST = "${DB_NAME_TEST}"
   }
   stages {
+    stage('SCM'){
+      steps{
+        git(branch: 'features/static-analysis', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
+      }
+    }
+    stage('SonarQube analysis'){
+      def scannerHome = tool 'SonarScanner 4.0';
+      withSonarQubeEnv('SonarCloud') { // If you have configured more than one global server connection, you can specify its name
+      sh "${scannerHome}/bin/sonar-scanner"
+    }
+    }
     stage('Build Test') {
       steps {
-        git(branch: 'develop', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
         sh 'docker compose -f docker-compose.test.yml build'
       }
     }

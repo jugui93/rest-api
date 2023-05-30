@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-notFound := "Fact not found"
+var notFound string = "Fact not found"
 
 func ListFacts(c *fiber.Ctx) error {
 	facts := []models.Fact{}

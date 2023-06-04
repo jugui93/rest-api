@@ -9,6 +9,32 @@ pipeline {
     DB_NAME_TEST = "${DB_NAME_TEST}"
   }
   stages {
+    stage('SCM'){
+      steps{
+        git(branch: 'develop', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
+      }
+    }
+    stage('SonarQube analysis'){
+      steps{
+        script{
+          def scannerHome = tool 'sq1';
+          withSonarQubeEnv('SonarQube') { // If you have configured more than one global server connection, you can specify its name
+          sh "${scannerHome}/bin/sonar-scanner"
+          }
+        }
+      }
+    }
+    stage("Quality Gate") {
+      steps {
+        retry(3){
+          timeout(time: 15, unit: 'SECONDS') {
+              // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+              // true = set pipeline to UNSTABLE, false = don't
+              waitForQualityGate abortPipeline: true
+          }
+        }
+      }
+    }
     stage('Build Test') {
       steps {
         git(branch: 'main', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')

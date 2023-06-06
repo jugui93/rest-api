@@ -14,7 +14,16 @@ pipeline {
         git(branch: 'feature/unit-testing', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
       }
     }
-    stage('SonarQube analysis'){
+    stage('Unit Testing'){
+      steps{
+        script{
+          def goHome = tool type: 'go', name: '1.19';
+          // If you have configured more than one global server connection, you can specify its name
+          sh "go test -timeout 30s -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json"
+        }
+      }
+    }
+    stage('SonarQube Analysis'){
       steps{
         script{
           def scannerHome = tool 'sq1';
@@ -61,7 +70,7 @@ pipeline {
       }
     }
 
-    stage('Run Test') {
+    stage('Integration Test') {
       steps {
         script {
           def testResult = sh(script: 'docker compose exec -T web go test ./cmd', returnStatus: true)
@@ -78,10 +87,10 @@ pipeline {
 
     stage('Build and push Docker compose') {
       steps {
-        sh '''aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com
+        sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 181021887246.dkr.ecr.us-east-1.amazonaws.com
                 docker compose build
                 docker tag project-lab-app-web:latest 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest
-                docker push 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest'''
+                docker push 181021887246.dkr.ecr.us-east-1.amazonaws.com/project-lab:latest'
       }
     }
 

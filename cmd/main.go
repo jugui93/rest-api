@@ -16,7 +16,7 @@ func main() {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
-	database.ConnectDb(dsn)
+	database.DB.Connect(dsn)
     app := fiber.New()
 	handlers := handlers.NewHandlers()
 

@@ -25,7 +25,7 @@ func TestListFacts(t *testing.T) {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME_TEST"),
 	)
-	database.ConnectDb(dsn)
+	database.DB.Connect(dsn)
 	SetupRoutes(app, handlers)
 	
 

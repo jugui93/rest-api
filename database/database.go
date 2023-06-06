@@ -10,13 +10,17 @@ import (
 	"github.com/jugui93/rest-api/models"
 )
 
-type Dbinstance struct {
+type Database interface {
+	Connect(dsn string)
+}
+
+type GormDatabase struct {
 	Db *gorm.DB
 }
 
-var DB Dbinstance
+var DB GormDatabase
 
-func ConnectDb(dsn string)  {
+func (g *GormDatabase) Connect(dsn string)  {
 	
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -33,7 +37,8 @@ func ConnectDb(dsn string)  {
 	log.Println("running migrations")
 	db.AutoMigrate(&models.Fact{})
 
-	DB = Dbinstance{
+	DB = GormDatabase{
 		Db: db,
 	}
 }
+

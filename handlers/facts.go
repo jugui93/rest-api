@@ -9,14 +9,28 @@ import (
 	"gorm.io/gorm"
 )
 
-func ListFacts(c *fiber.Ctx) error {
+type HandlersInterface interface {
+	ListFacts(c *fiber.Ctx) error
+	CreateFact(c *fiber.Ctx) error
+	ShowFact(c *fiber.Ctx) error
+	UpdateFact(c *fiber.Ctx) error
+	DeleteFact(c *fiber.Ctx) error
+}
+
+type Handlers struct {}
+
+func NewHandlers() HandlersInterface {
+	return &Handlers{}
+}
+
+func (h *Handlers) ListFacts(c *fiber.Ctx) error {
 	facts := []models.Fact{}
 	
 	database.DB.Db.Find(&facts)
 	return c.Status(200).JSON(facts)
 }
 
-func CreateFact(c *fiber.Ctx) error {
+func (h *Handlers) CreateFact(c *fiber.Ctx) error {
 	fact := new(models.Fact)
 	if err := c.BodyParser(fact); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -29,7 +43,7 @@ func CreateFact(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fact)
 }
 
-func ShowFact(c *fiber.Ctx) error {
+func (h *Handlers) ShowFact(c *fiber.Ctx) error {
 	fact := models.Fact{}
 	id := c.Params("id")
 
@@ -48,7 +62,7 @@ func ShowFact(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fact)
 }
 
-func UpdateFact(c *fiber.Ctx) error {
+func (h *Handlers) UpdateFact(c *fiber.Ctx) error {
 	fact := new(models.Fact)
 	id := c.Params("id")
 	err := database.DB.Db.First(&fact, id).Error
@@ -79,7 +93,7 @@ func UpdateFact(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fact)
 }
 
-func DeleteFact(c *fiber.Ctx) error {
+func (h *Handlers) DeleteFact(c *fiber.Ctx) error {
 	fact := new(models.Fact)
 	id := c.Params("id")
 	err := database.DB.Db.First(&fact, id).Error

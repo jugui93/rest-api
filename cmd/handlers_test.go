@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jugui93/rest-api/database"
+	"github.com/jugui93/rest-api/handlers"
 	"github.com/jugui93/rest-api/models"
 )
 
@@ -17,6 +18,7 @@ import (
 func TestListFacts(t *testing.T) {
 	// setup
 	app := fiber.New()
+	handlers := handlers.NewHandlers()
 	dsn := fmt.Sprintf(
 		"host=dbtest user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
 		os.Getenv("DB_USER"),
@@ -24,7 +26,7 @@ func TestListFacts(t *testing.T) {
 		os.Getenv("DB_NAME_TEST"),
 	)
 	database.ConnectDb(dsn)
-	SetupRoutes(app)
+	SetupRoutes(app, handlers)
 	
 
 	// create test data

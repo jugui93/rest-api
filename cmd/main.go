@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jugui93/rest-api/database"
+	"github.com/jugui93/rest-api/handlers"
 )
 
 func main() {
@@ -17,8 +18,9 @@ func main() {
 	)
 	database.ConnectDb(dsn)
     app := fiber.New()
+	handlers := handlers.NewHandlers()
 
-	SetupRoutes(app)
+	SetupRoutes(app, handlers)
 
     app.Listen(":3000")
 }

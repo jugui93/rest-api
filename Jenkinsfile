@@ -20,7 +20,12 @@ pipeline {
           def goHome = tool type: 'go', name: '1.20';
           withEnv(["GOROOT=${goHome}", "PATH+GO=${goHome}/bin"]) {
             // If you have configured more than one global server connection, you can specify its name
-            sh 'go test -timeout 30s -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json'
+            def testResult = sh(script: 'go test -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json', returnStatus: true)
+            if (testResult != 0) {
+              currentBuild.result = 'FAILURE'
+              error('Tests failed')
+            }
+              // sh 'go test -timeout 30s -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json'
           }
         }
       }

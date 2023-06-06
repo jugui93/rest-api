@@ -20,7 +20,7 @@ pipeline {
           def goHome = tool type: 'go', name: '1.20';
           withEnv(["GOROOT=${goHome}", "PATH+GO=${goHome}/bin"]) {
             // If you have configured more than one global server connection, you can specify its name
-            def testResult = sh(script: 'go test -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json', returnStatus: true)
+            def testResult = sh returnStatus: true, script: 'go test -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json'
             if (testResult != 0) {
               currentBuild.result = 'FAILURE'
               error('Tests failed')
@@ -41,7 +41,6 @@ pipeline {
       }
     }
     stage("Quality Gate") {
-      steps {
         retry(3){
           timeout(time: 15, unit: 'SECONDS') {
               // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails

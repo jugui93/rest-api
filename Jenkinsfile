@@ -41,11 +41,13 @@ pipeline {
       }
     }
     stage("Quality Gate") {
-      retry(3){
-        timeout(time: 15, unit: 'SECONDS') {
-            // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-            // true = set pipeline to UNSTABLE, false = don't
-            waitForQualityGate abortPipeline: true
+      steps{
+        retry(3){
+          timeout(time: 15, unit: 'SECONDS') {
+              // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+              // true = set pipeline to UNSTABLE, false = don't
+              waitForQualityGate abortPipeline: true
+          }
         }
       }
     }

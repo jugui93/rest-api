@@ -18,8 +18,9 @@ pipeline {
       steps{
         script{
           def goHome = tool type: 'go', name: '1.20';
-          // If you have configured more than one global server connection, you can specify its name
-          sh 'go test -timeout 30s -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json'
+          withEnv(["GOROOT=${goHome}", "PATH+GO=${goHome}/bin"]) {
+            // If you have configured more than one global server connection, you can specify its name
+            sh 'go test -timeout 30s -run ^TestSetupRoutes$ github.com/jugui93/rest-api/cmd -coverprofile coverage.out -json > report.json'
         }
       }
     }

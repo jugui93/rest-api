@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('SCM'){
       steps{
-        git(branch: 'develop', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
+        git(branch: 'feature/unit-testing', credentialsId: 'c3901aa1-c7bc-42f7-819e-3cc7219596d7', url: 'git@github.com:jugui93/rest-api.git')
       }
     }
     stage('SonarQube analysis'){

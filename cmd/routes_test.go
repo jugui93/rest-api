@@ -59,7 +59,7 @@ func TestSetupRoutes(t *testing.T) {
 	routes := app.GetRoutes()
 
 	// Verificar que se hayan registrado las rutas esperadas
-	assert.Equal(t, 7, len(routes))
+	assert.Equal(t, 5, len(routes))
 
 	req := httptest.NewRequest("GET", "/fact", nil)
 	_ , err := app.Test(req)
